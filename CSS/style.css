@@ -1,1 +1,40 @@
 /*CSS*/
+html, body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: sans-serif;
+    background: #87CEFA url("img/background.png") no-repeat fixed center;
+    -webkit-background-size: cover;
+    background-size: cover;
+    overflow: hidden;
+}
+
+#scorecard{
+    width: 75%;
+    background-color: #FFFFFF;
+    border: 2px solid black;
+    margin: 20vh auto auto;
+}
+
+#table{
+    width: 100%;
+}
+
+#table, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 10px;
+}
+
+.player{
+    width: 100px;
+    text-align: center;
+}
+
+#par{
+    text-align: center;
+}

@@ -4,10 +4,17 @@
 <head>
     <title>Golf Score Card</title>
     <link rel="stylesheet" href="CSS/style.css"/>
+    <link rel="icon" href="CSS/img/golf.png"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer src="JS/script.js"></script>
 </head>
-<body>
-
+<body onload="initiate(['Billy', 'Bob', 'Joe', 'Steve', 'Michael'], [5,5,5,5,5,5])">
+<div id="scorecard">
+    <table id="table">
+        <tr id="holes">
+            <th class="player">HOLE</th>
+        </tr>
+    </table>
+</div>
 </body>
-</html>
+</html>#
