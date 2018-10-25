@@ -9,6 +9,7 @@ html, body{
     -webkit-background-size: cover;
     background-size: cover;
     overflow: hidden;
+    /*filter: blur(10px);*/
 }
 
 #scorecard{
@@ -37,4 +38,17 @@ html, body{
 
 #par{
     text-align: center;
+}
+
+:focus{
+    background-color: #00FF00;
+}
+
+.pos{
+    color: #FF0000;
+}
+
+.neg{
+    color: #00FF00;
+    font-weight: bold;
 }
