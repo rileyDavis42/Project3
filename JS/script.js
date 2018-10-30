@@ -1,7 +1,58 @@
 //JavaScript
+let course;
+let course_holes;
+let players = [];
 
-function initiate(players, holes){
-    let emptyScores = ["<td></td>"];
+function addPlayer(){
+    let obj = $("#newName");
+    let name = obj.val();
+    obj.val("");
+    players.push(name);
+    $("#displayPlayers").append("<li>" + name + "<i class=\"fas fa-trash-alt\" onclick=\"deletePlayer(" + players.length + ")\"></i></li>");
+}
+
+function deletePlayer(index){
+    players = players.splice(index, 1);
+    let krana = $("#displayPlayers");
+    krana.empty();
+    for(let i = 0; i < players.length; i++){
+        krana.append("<li>" + players[i] + "<i class=\"fas fa-trash-alt\" onclick=\"deletePlayer(" + i + ")\"</li></li>");
+    }
+}
+
+function importData(){
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = () => {
+
+        if(httpRequest.readyState === XMLHttpRequest.DONE){
+            let response = JSON.parse(httpRequest.response);
+            if(response.success){
+            }
+            course = response;
+            course_holes = course["course"]["holes"];
+            let courseID = $("#courseID");
+            courseID.attr("readonly", "true");
+            courseID.attr("value", course_holes[0]["course_id"]);
+        }
+
+    };
+    httpRequest.open('POST', 'data/test.json');
+    httpRequest.send();
+}
+
+function startGame(){
+    let tee_type = $("#tee_type").val();
+    $("#topContent").empty();
+    let holes = [];
+    for(let i = 0; i < course_holes.length; i++){
+        let hole = course_holes[i]["tee_boxes"][tee_type]["par"];
+        holes.push(hole);
+    }
+    initiate(holes);
+}
+
+function initiate(holes){
+    let emptyScores = ["<td contenteditable='false'></td>"];
     let width = 100 / (holes.length + 1);
     let table = $("#table");
     let holesArr = $("#holes");
@@ -20,10 +71,10 @@ function initiate(players, holes){
         par.append("<td>" + holes[i] + "</td>");
     }
     par.append("<td></td>");
-    turn(0, 0, players, holes);
+    turn(0, 0, holes);
 
 }
-function turn(player, hole, players, holes){
+function turn(player, hole, holes){
     let row = $("tbody").children().eq(player + 1);
     let cell = row.children().eq(hole + 1);
     cell.empty();
@@ -35,8 +86,8 @@ function turn(player, hole, players, holes){
     row.children().eq(hole + 1).on("keydown", function (event) {
         if(event.keyCode === 13 || event.keyCode === 9){
             event.preventDefault();
-            if(isNaN(cell.html())){
-                turn(player, hole, players, holes);
+            if(isNaN(Number(cell.html()))){
+                turn(player, hole, holes);
             }
 
             else{
@@ -55,15 +106,57 @@ function turn(player, hole, players, holes){
                     updatePlayers = updatePlayers + ", '" + players[i] + "'";
                 }
                 updatePlayers = updatePlayers + "]";
-                cell.attr("onclick", "turn(" + player + ", " + hole + ", " + updatePlayers + ", " + holes.toString() + ")");
+                cell.attr("onclick", "turn(" + player+ ", " + hole + ", " + holes.toString() + ")");
 
                 if(player === players.length - 1){
-                    turn(0, hole + 1, players, holes);
+                    if(hole === holes.length - 1){
+                        calcTotal();
+                        cell.focus();
+                    }
+                    else{
+                        turn(0, hole + 1, holes);
+                    }
                 }
                 else{
-                    turn(player + 1, hole, players, holes);
+                    turn(player + 1, hole, holes);
                 }
             }
         }
     });
+}
+
+function calcTotal(){
+    let tbody = $("tbody");
+    for(let i = 1; i < tbody.children().length - 1; i++){
+        let row = tbody.children().eq(i);
+        let hits = [];
+        let scores = [];
+        for(let j = 1; j < row.children().length - 1; j++){
+            let cell = row.children().eq(j);
+
+            let str = cell.html().split(' | ');
+
+            let hit = parseInt(str[0]);
+
+            let score = parseInt(str[1].split('>')[1].split('<')[0]);
+
+            hits.push(hit);
+            scores.push(score);
+        }
+        let totalHits = 0;
+        let totalScores = 0;
+
+        for(let j = 0; j < hits.length; j++){
+            totalHits += hits[j];
+        }
+        for(let j = 0; j < scores.length; j++){
+            totalScores += scores[j];
+        }
+        let val = "pos";
+        if(totalScores <= 0){
+            val = "neg";
+        }
+
+        row.children().last().html(totalHits + " | <span class='" + val + "'>" + totalScores + "</span>");
+    }
 }

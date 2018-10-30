@@ -4,12 +4,82 @@ html, body{
     padding: 0;
     width: 100%;
     height: 100%;
-    font-family: sans-serif;
-    background: #87CEFA url("img/background.png") no-repeat fixed center;
-    -webkit-background-size: cover;
-    background-size: cover;
+    font-family: 'Poppins', sans-serif;
     overflow: hidden;
     /*filter: blur(10px);*/
+}
+
+#blur{
+    background: #87CEFA url("img/background.png") no-repeat fixed center;;
+    -webkit-background-size: cover;
+    background-size: cover;
+    filter: blur(5px);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+}
+
+#form{
+    margin: auto;
+    text-align: center;
+    width: 50vw;
+    padding: 10px;
+}
+
+#inner-form{
+    display: block;
+    margin: 10px auto;
+}
+
+button{
+    color: #FFFFFF;
+    display: inline-block;
+    font-weight: 400;
+    padding: 0.4em;
+    font-size: 1em;
+    border-radius: 5px;
+    transition: background-color 300ms ease-in-out;
+    background-color: #007BFF;
+    border: 1px solid #007BFF;
+    margin: 0.3em;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: #0069D9;
+}
+
+input{
+    border-radius: 7px;
+    padding: 0.2em;
+    color: #495057;
+    border: 1px solid #D3D3D3;
+}
+
+#names {
+    width: 50%;
+    text-align: center;
+    margin: auto;
+    background-color: #FFFFFF;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#displayPlayers li{
+    text-align: left;
+    border: 1px dashed black;
+    display: list-item;
+    width: 100%;
+    list-style-position: inside;
+}
+
+#displayPlayers li i{
+    cursor: pointer;
+    float: right;
 }
 
 #scorecard{
@@ -23,7 +93,7 @@ html, body{
     width: 100%;
 }
 
-#table, th, td{
+table, th, td{
     border: 1px solid black;
     border-collapse: collapse;
     overflow: hidden;
@@ -40,7 +110,7 @@ html, body{
     text-align: center;
 }
 
-:focus{
+td:focus{
     background-color: #00FF00;
 }
 

@@ -3,12 +3,39 @@
 <html>
 <head>
     <title>Golf Score Card</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous"/>
     <link rel="stylesheet" href="CSS/style.css"/>
     <link rel="icon" href="CSS/img/golf.png"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer async src="JS/script.js"></script>
 </head>
-<body onload="initiate(['Billy', 'Bob', 'Joe', 'Steve', 'Michael'], [5,5,5,5,5,5])">
+<body onload="importData()">
+<div id="blur"></div>
+    <div id="topContent">
+    <div id = "form">
+            <label for="courseID">Course ID: </label><input id="courseID" type="text"/>
+            <div id="inner-form">
+                <label for="tee_type">Tee-Type:
+                    <select id="tee_type">
+                        <option value="0">Pro</option>
+                        <option value="1">Champion</option>
+                        <option value="2">Men</option>
+                        <option value="3">Women</option>
+                    </select>
+                </label>
+                <div id="players">
+                    <input id="newName" type="text" placeholder="Player name..."/><button onclick="addPlayer()">Add Player</button>
+                </div>
+            </div>
+        <button onclick="startGame()">Submit</button>
+    </div>
+    <div id="names">
+        Names
+        <ol id="displayPlayers">
+        </ol>
+    </div>
+</div>
 <div id="scorecard">
     <table id="table">
         <tr id="holes">
