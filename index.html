@@ -10,32 +10,32 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script defer async src="JS/script.js"></script>
 </head>
-<body onload="importData()">
+<body>
 <div id="blur"></div>
     <div id="topContent">
-    <div id = "form">
-            <label for="courseID">Course ID: </label><input id="courseID" type="text"/>
-            <div id="inner-form">
-                <label for="tee_type">Tee-Type:
-                    <select id="tee_type">
-                        <option value="0">Pro</option>
-                        <option value="1">Champion</option>
-                        <option value="2">Men</option>
-                        <option value="3">Women</option>
-                    </select>
-                </label>
-                <div id="players">
-                    <input id="newName" type="text" placeholder="Player name..."/><button onclick="addPlayer()">Add Player</button>
+        <div id = "form">
+                <label for="courseID">Course ID: </label><input id="courseID" type="text"/>
+                <div id="inner-form">
+                    <label for="tee_type">Tee-Type:
+                        <select id="tee_type">
+                            <option value="0">Pro</option>
+                            <option value="1">Champion</option>
+                            <option value="2">Men</option>
+                            <option value="3">Women</option>
+                        </select>
+                    </label>
+                    <div id="players">
+                        <input id="newName" type="text" placeholder="Player name..."/><button onclick="addPlayer()">Add Player</button>
+                    </div>
                 </div>
-            </div>
-        <button onclick="startGame()">Submit</button>
+            <button onclick="importData()">Submit</button>
+        </div>
+        <div id="names">
+            Names
+            <ol id="displayPlayers">
+            </ol>
+        </div>
     </div>
-    <div id="names">
-        Names
-        <ol id="displayPlayers">
-        </ol>
-    </div>
-</div>
 <div id="scorecard">
     <table id="table">
         <tr id="holes">
@@ -43,5 +43,6 @@
         </tr>
     </table>
 </div>
+<img src="" id="thumbnail"/>
 </body>
 </html>

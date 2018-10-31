@@ -20,6 +20,17 @@ html, body{
     z-index: -1;
 }
 
+#dialog{
+    transition: opacity 5s;
+    background-color: #FFFFDD;
+    padding: 10px;
+    color: #666666;
+    border: 1px solid #CCCCCC;
+    font-family: 'Poppins', sans-serif;
+    position: fixed;
+    border-radius: 5px;
+}
+
 #form{
     margin: auto;
     text-align: center;
@@ -121,4 +132,9 @@ td:focus{
 .neg{
     color: #00FF00;
     font-weight: bold;
+}
+
+#thumbnail{
+    display: block;
+    margin: 10px auto auto;
 }

@@ -23,20 +23,29 @@ function deletePlayer(index){
 function importData(){
     let httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = () => {
-
         if(httpRequest.readyState === XMLHttpRequest.DONE){
             let response = JSON.parse(httpRequest.response);
-            if(response.success){
-            }
-            course = response;
-            course_holes = course["course"]["holes"];
+            course = response["data"];
+            course_holes = course["holes"];
             let courseID = $("#courseID");
             courseID.attr("readonly", "true");
             courseID.attr("value", course_holes[0]["course_id"]);
+            startGame();
         }
-
+        else if(httpRequest.status === 404 && !$("#dialog").length){
+            $("#topContent").append("" +
+                "<dialog id='dialog' open>" +
+                "<p>That course was not found...</p>" +
+                "</dialog>");
+            setTimeout(function () {
+                $("#dialog").css('opacity', '0');
+            }, 3000);
+            setTimeout(function(){
+                $("#dialog").remove();
+            }, 6000);
+        }
     };
-    httpRequest.open('POST', 'data/test.json');
+    httpRequest.open('GET', 'https://golf-courses-api.herokuapp.com/courses/' + $('#courseID').val(), true);
     httpRequest.send();
 }
 
@@ -45,9 +54,11 @@ function startGame(){
     $("#topContent").empty();
     let holes = [];
     for(let i = 0; i < course_holes.length; i++){
-        let hole = course_holes[i]["tee_boxes"][tee_type]["par"];
+        let hole = course_holes[i]["teeBoxes"][tee_type]["par"];
         holes.push(hole);
     }
+    $("#thumbnail").attr("src", course["thumbnail"]);
+    $("#scorecard").prepend("<h1>" + course["name"] + "</h1>");
     initiate(holes);
 }
 
@@ -56,6 +67,7 @@ function initiate(holes){
     let width = 100 / (holes.length + 1);
     let table = $("#table");
     let holesArr = $("#holes");
+    let totalPar = 0;
     $('head').append("<style>th,tr,td{width: " + width + "%; overflow-x: hidden}</style>");
     for(let i = 0; i < holes.length; i++){
         holesArr.append("<th>" + (i + 1) + "</th>");
@@ -69,8 +81,9 @@ function initiate(holes){
     let par = $("#par");
     for(let i = 0; i < holes.length; i++){
         par.append("<td>" + holes[i] + "</td>");
+        totalPar += holes[i];
     }
-    par.append("<td></td>");
+    par.append("<td>" + totalPar +"</td>");
     turn(0, 0, holes);
 
 }
