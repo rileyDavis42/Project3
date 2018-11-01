@@ -5,11 +5,18 @@ let players = [];
 let scorecard = $("#scorecard");
 let can = false;
 let tee_type;
+let totalYardage = 0;
 scorecard.css('border', 'none');
 
 function addPlayer(){
     let obj = $("#newName");
     let name = obj.val();
+    for(let i = 0; i < players.length; i++){
+        if(name === players[i]){
+            alertMessage("No two players can have the same name!");
+            return;
+        }
+    }
     obj.val("");
     players.push(name);
     $("#displayPlayers").append("<li>" + name + "<i class=\"fas fa-trash-alt\" onclick=\"deletePlayer(" + players.length + ")\"></i></li>");
@@ -30,7 +37,6 @@ function updateCourse(){
     display.find("h3").html(course["name"]);
     tee_type = $("#tee_type").val();
     let avg = 0;
-    let totalYardage = 0;
     for(let i = 0; i < course_holes.length; i++){
         avg += course_holes[i]["teeBoxes"][tee_type]["par"];
         totalYardage += course_holes[i]["teeBoxes"][tee_type]["yards"];
@@ -60,39 +66,38 @@ function importData(){
 }
 
 function startGame(){
-    if(can){
-        $("#topContent").empty();
-        let holes = [];
-        for(let i = 0; i < course_holes.length; i++){
-            let hole = course_holes[i]["teeBoxes"][tee_type]["par"];
-            holes.push(hole);
-        }
-        let blur = $("#blur");
-        blur.css("background", "#87CEFA url('" +course["thumbnail"] + "') no-repeat fixed center");
-        blur.css("background-size", "cover");
-        scorecard.prepend("<h1>" + course["name"] + "</h1>");
-        initiate(holes);
+    if(players.length < 1){
+        alertMessage("Please add a player...");
+        return;
     }
-    else{
-        $("#topContent").append("" +
-            "<dialog id='dialog' open>" +
-            "<p>Please select a course...</p>" +
-            "</dialog>");
-        setTimeout(function () {
-            $("#dialog").css('opacity', '0');
-        }, 3000);
-        setTimeout(function(){
-            $("#dialog").remove();
-        }, 6000);
+    if(!can){
+        alertMessage("Please select a course...");
+        return;
     }
+    $("#topContent").empty();
+    let holes = [];
+    let yardages = [];
+    let handicaps = [];
+    for(let i = 0; i < course_holes.length; i++){
+        let hole = course_holes[i]["teeBoxes"][tee_type];
+        holes.push(hole["par"]);
+        yardages.push(hole["yards"]);
+        handicaps.push(hole["hcp"]);
+    }
+    let blur = $("#blur");
+    blur.css("background", "#87CEFA url('" +course["thumbnail"] + "') no-repeat fixed center");
+    blur.css("background-size", "cover");
+    scorecard.prepend("<h1>" + course["name"] + "</h1>");
+    initiate(holes, yardages, handicaps);
 }
 
-function initiate(holes){
+function initiate(holes, yardages, handicaps){
     let emptyScores = ["<td contenteditable='false'></td>"];
     let width = 100 / (holes.length + 1);
     let table = $("#table");
     let holesArr = $("#holes");
     let totalPar = 0;
+    let totalHandicap = 0;
     table.css('display', 'table');
     scorecard.css('border', '');
     $('head').append("<style>th,tr,td{width: " + width + "%; overflow-x: hidden}</style>");
@@ -106,15 +111,27 @@ function initiate(holes){
     }
     table.append("<tr id='par'><td>PAR</td></tr>");
     let par = $("#par");
+    table.append("<tr id='yards'><td>Yards</td></tr>");
+    let yards = $("#yards");
+    table.append("<tr id='handicap'><td>Handicap</td></tr>");
+    let handicap = $("#handicap");
     for(let i = 0; i < holes.length; i++){
         par.append("<td>" + holes[i] + "</td>");
         totalPar += holes[i];
+
+        yards.append("<td>" + yardages[i] + "</td>");
+
+        handicap.append("<td>" + handicaps[i] +"</td>");
+        totalHandicap += handicaps[i];
     }
     par.append("<td>" + totalPar +"</td>");
+    yards.append("<td>" + totalYardage + "</td>");
+    handicap.append("<td>" + totalHandicap + "</td>");
     turn(0, 0, holes);
 
 }
 function turn(player, hole, holes){
+    calcTotal();
     let row = $("tbody").children().eq(player + 1);
     let cell = row.children().eq(hole + 1);
     cell.empty();
@@ -150,7 +167,6 @@ function turn(player, hole, holes){
 
                 if(player === players.length - 1){
                     if(hole === holes.length - 1){
-                        calcTotal();
                         cell.focus();
                     }
                     else{
@@ -167,21 +183,22 @@ function turn(player, hole, holes){
 
 function calcTotal(){
     let tbody = $("tbody");
-    for(let i = 1; i < tbody.children().length - 1; i++){
+    for(let i = 1; i < tbody.children().length - 3; i++){
         let row = tbody.children().eq(i);
         let hits = [];
         let scores = [];
         for(let j = 1; j < row.children().length - 1; j++){
             let cell = row.children().eq(j);
+            if(cell.html().length > 1){
+                let str = cell.html().split(' | ');
 
-            let str = cell.html().split(' | ');
+                let hit = parseInt(str[0]);
 
-            let hit = parseInt(str[0]);
+                let score = parseInt(str[1].split('>')[1].split('<')[0]);
 
-            let score = parseInt(str[1].split('>')[1].split('<')[0]);
-
-            hits.push(hit);
-            scores.push(score);
+                hits.push(hit);
+                scores.push(score);
+            }
         }
         let totalHits = 0;
         let totalScores = 0;
@@ -199,4 +216,18 @@ function calcTotal(){
 
         row.children().last().html(totalHits + " | <span class='" + val + "'>" + totalScores + "</span>");
     }
+}
+
+function alertMessage(message){
+    $("#dialog").remove();
+    $("body").prepend("" +
+        "<dialog id='dialog' open>" +
+        "<p>" + message + "</p>" +
+        "</dialog>");
+    setTimeout(function () {
+        $("#dialog").css('opacity', '0');
+    }, 2000);
+    setTimeout(function(){
+        $("#dialog").remove();
+    }, 5000);
 }

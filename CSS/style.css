@@ -22,6 +22,7 @@ html, body{
 
 #topContent{
     text-align: center;
+    margin-top: 10vh;
 }
 
 #dialog{
@@ -126,7 +127,7 @@ table, th, td{
     text-align: center;
 }
 
-#par{
+#par, #yards, #handicap{
     text-align: center;
 }
 
