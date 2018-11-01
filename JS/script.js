@@ -2,6 +2,10 @@
 let course;
 let course_holes;
 let players = [];
+let scorecard = $("#scorecard");
+let can = false;
+let tee_type;
+scorecard.css('border', 'none');
 
 function addPlayer(){
     let obj = $("#newName");
@@ -20,29 +24,35 @@ function deletePlayer(index){
     }
 }
 
+function updateCourse(){
+    let display = $("#displayCourse");
+    display.removeAttr("style");
+    display.find("h3").html(course["name"]);
+    tee_type = $("#tee_type").val();
+    let avg = 0;
+    let totalYardage = 0;
+    for(let i = 0; i < course_holes.length; i++){
+        avg += course_holes[i]["teeBoxes"][tee_type]["par"];
+        totalYardage += course_holes[i]["teeBoxes"][tee_type]["yards"];
+    }
+    avg /= course_holes.length;
+    $("#averagePar").html(avg);
+    $("#totalYards").html(totalYardage);
+}
+
 function importData(){
     let httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = () => {
         if(httpRequest.readyState === XMLHttpRequest.DONE){
+            can = true;
             let response = JSON.parse(httpRequest.response);
             course = response["data"];
             course_holes = course["holes"];
             let courseID = $("#courseID");
-            courseID.attr("readonly", "true");
-            courseID.attr("value", course_holes[0]["course_id"]);
-            startGame();
+            updateCourse();
         }
         else if(httpRequest.status === 404 && !$("#dialog").length){
-            $("#topContent").append("" +
-                "<dialog id='dialog' open>" +
-                "<p>That course was not found...</p>" +
-                "</dialog>");
-            setTimeout(function () {
-                $("#dialog").css('opacity', '0');
-            }, 3000);
-            setTimeout(function(){
-                $("#dialog").remove();
-            }, 6000);
+            can = false;
         }
     };
     httpRequest.open('GET', 'https://golf-courses-api.herokuapp.com/courses/' + $('#courseID').val(), true);
@@ -50,16 +60,31 @@ function importData(){
 }
 
 function startGame(){
-    let tee_type = $("#tee_type").val();
-    $("#topContent").empty();
-    let holes = [];
-    for(let i = 0; i < course_holes.length; i++){
-        let hole = course_holes[i]["teeBoxes"][tee_type]["par"];
-        holes.push(hole);
+    if(can){
+        $("#topContent").empty();
+        let holes = [];
+        for(let i = 0; i < course_holes.length; i++){
+            let hole = course_holes[i]["teeBoxes"][tee_type]["par"];
+            holes.push(hole);
+        }
+        let blur = $("#blur");
+        blur.css("background", "#87CEFA url('" +course["thumbnail"] + "') no-repeat fixed center");
+        blur.css("background-size", "cover");
+        scorecard.prepend("<h1>" + course["name"] + "</h1>");
+        initiate(holes);
     }
-    $("#thumbnail").attr("src", course["thumbnail"]);
-    $("#scorecard").prepend("<h1>" + course["name"] + "</h1>");
-    initiate(holes);
+    else{
+        $("#topContent").append("" +
+            "<dialog id='dialog' open>" +
+            "<p>Please select a course...</p>" +
+            "</dialog>");
+        setTimeout(function () {
+            $("#dialog").css('opacity', '0');
+        }, 3000);
+        setTimeout(function(){
+            $("#dialog").remove();
+        }, 6000);
+    }
 }
 
 function initiate(holes){
@@ -68,6 +93,8 @@ function initiate(holes){
     let table = $("#table");
     let holesArr = $("#holes");
     let totalPar = 0;
+    table.css('display', 'table');
+    scorecard.css('border', '');
     $('head').append("<style>th,tr,td{width: " + width + "%; overflow-x: hidden}</style>");
     for(let i = 0; i < holes.length; i++){
         holesArr.append("<th>" + (i + 1) + "</th>");

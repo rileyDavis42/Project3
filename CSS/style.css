@@ -20,6 +20,10 @@ html, body{
     z-index: -1;
 }
 
+#topContent{
+    text-align: center;
+}
+
 #dialog{
     transition: opacity 5s;
     background-color: #FFFFDD;
@@ -69,10 +73,10 @@ input{
     border: 1px solid #D3D3D3;
 }
 
-#names {
+#names, #displayCourse {
     width: 50%;
     text-align: center;
-    margin: auto;
+    margin: 10px auto auto;
     background-color: #FFFFFF;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -101,6 +105,11 @@ input{
 }
 
 #table{
+    width: 100%;
+    display: none;
+}
+
+table{
     width: 100%;
 }
 

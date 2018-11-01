@@ -14,35 +14,58 @@
 <div id="blur"></div>
     <div id="topContent">
         <div id = "form">
-                <label for="courseID">Course ID: </label><input id="courseID" type="text"/>
-                <div id="inner-form">
-                    <label for="tee_type">Tee-Type:
-                        <select id="tee_type">
-                            <option value="0">Pro</option>
-                            <option value="1">Champion</option>
-                            <option value="2">Men</option>
-                            <option value="3">Women</option>
-                        </select>
-                    </label>
-                    <div id="players">
-                        <input id="newName" type="text" placeholder="Player name..."/><button onclick="addPlayer()">Add Player</button>
-                    </div>
+            <label for="courseID">Course: </label><select id="courseID" onchange="importData()">
+            <option value="X">--Select a Course--</option>
+            <option value="18300">Fox Hollow</option>
+            <option value="11819">Thanksgiving Point</option>
+            <option value="19002">Spanish Oaks</option>
+            </select>
+            <div id="inner-form">
+                <label for="tee_type">Tee-Type:
+                    <select id="tee_type" onchange="importData()">
+                        <option value="0">Pro</option>
+                        <option value="1">Champion</option>
+                        <option value="2">Men</option>
+                        <option value="3">Women</option>
+                    </select>
+                </label>
+                <div id="players">
+                    <input id="newName" type="text" placeholder="Player name..."/><button onclick="addPlayer()">Add Player</button>
                 </div>
-            <button onclick="importData()">Submit</button>
+            </div>
         </div>
         <div id="names">
-            Names
+            <h3>Names</h3>
             <ol id="displayPlayers">
             </ol>
         </div>
+        <div id="displayCourse" style="display: none">
+            <h3></h3>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Average Par</td>
+                    <td id="averagePar"></td>
+                </tr>
+                <tr>
+                    <td>Total Yards</td>
+                    <td id="totalYards"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <button onclick="startGame()">Submit</button>
     </div>
 <div id="scorecard">
     <table id="table">
         <tr id="holes">
-            <th class="player">HOLE</th>
+            <th class="player"></th>
         </tr>
     </table>
 </div>
-<img src="" id="thumbnail"/>
 </body>
 </html>
