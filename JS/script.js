@@ -87,12 +87,13 @@ function startGame(){
     let blur = $("#blur");
     blur.css("background", "#87CEFA url('" +course["thumbnail"] + "') no-repeat fixed center");
     blur.css("background-size", "cover");
+    scorecard.prepend("<button id='reset' onclick='reset()'>Reset</button>");
     scorecard.prepend("<h1>" + course["name"] + "</h1>");
     initiate(holes, yardages, handicaps);
 }
 
 function initiate(holes, yardages, handicaps){
-    let emptyScores = ["<td contenteditable='false'></td>"];
+    let emptyScores = [];
     let width = 100 / (holes.length + 1);
     let table = $("#table");
     let holesArr = $("#holes");
@@ -107,7 +108,7 @@ function initiate(holes, yardages, handicaps){
     }
     holesArr.append("<th>Total</th>");
     for(let i = 0; i < players.length; i++){
-       table.append("<tr class='player'><td>" + players[i] + "</td>" + emptyScores + "</tr>");
+       table.append("<tr class='player'><td>" + players[i] + "</td>" + emptyScores + "<td class='totalScore'></td></tr>");
     }
     table.append("<tr id='par'><td>PAR</td></tr>");
     let par = $("#par");
@@ -130,10 +131,11 @@ function initiate(holes, yardages, handicaps){
     turn(0, 0, holes);
 
 }
-function turn(player, hole, holes){
+function turn(player, hole, holes) {
     calcTotal();
     let row = $("tbody").children().eq(player + 1);
     let cell = row.children().eq(hole + 1);
+    if (cell.attr('class') !== 'totalScore') {
     cell.empty();
     row.css("background-color", "#FFFF00");
     cell.attr("contenteditable", "true");
@@ -141,52 +143,53 @@ function turn(player, hole, holes){
     cell.focus();
 
     row.children().eq(hole + 1).on("keydown", function (event) {
-        if(event.keyCode === 13 || event.keyCode === 9){
+        if (event.keyCode === 13 || event.keyCode === 9) {
             event.preventDefault();
-            if(isNaN(Number(cell.html()))){
+
+            if (isNaN(cell.html()) || cell.html().length < 1) {
+                cell.empty();
                 turn(player, hole, holes);
             }
 
-            else{
+            else {
                 let updatePlayers = "['" + players[0] + "'";
                 let par = holes[hole];
                 let score = cell.html() - par;
                 let val = "pos";
-                if(score <= 0){
+                if (score <= 0) {
                     val = "neg";
                 }
                 cell.html(cell.html() + " | <span class='" + val + "'>" + score + "</span>");
 
                 row.css("background-color", "#FFFFFF");
                 cell.css("background-color", "unset");
-                for(let i = 1; i < players.length; i++){
+                for (let i = 1; i < players.length; i++) {
                     updatePlayers = updatePlayers + ", '" + players[i] + "'";
                 }
                 updatePlayers = updatePlayers + "]";
-                cell.attr("onclick", "turn(" + player+ ", " + hole + ", " + holes.toString() + ")");
+                cell.attr("contenteditable", false);
 
-                if(player === players.length - 1){
-                    if(hole === holes.length - 1){
-                        cell.focus();
-                    }
-                    else{
-                        turn(0, hole + 1, holes);
-                    }
+                if (player === players.length - 1) {
+                    turn(0, hole + 1, holes);
                 }
-                else{
+                else {
                     turn(player + 1, hole, holes);
                 }
             }
         }
     });
+    }
 }
 
 function calcTotal(){
     let tbody = $("tbody");
+    let name = "";
+    let finished = true;
     for(let i = 1; i < tbody.children().length - 3; i++){
         let row = tbody.children().eq(i);
         let hits = [];
         let scores = [];
+        name = row.children().eq(0).html();
         for(let j = 1; j < row.children().length - 1; j++){
             let cell = row.children().eq(j);
             if(cell.html().length > 1){
@@ -198,6 +201,9 @@ function calcTotal(){
 
                 hits.push(hit);
                 scores.push(score);
+            }
+            else{
+                finished = false;
             }
         }
         let totalHits = 0;
@@ -215,6 +221,19 @@ function calcTotal(){
         }
 
         row.children().last().html(totalHits + " | <span class='" + val + "'>" + totalScores + "</span>");
+
+        if(finished){
+            status(row.children().eq(0).html(), totalScores);
+        }
+    }
+}
+
+function status(name, score){
+    if(score > 0){
+        alertMessage("Better luck next time " + name + "!");
+    }
+    else{
+        alertMessage("Good game " + name + "!");
     }
 }
 
@@ -230,4 +249,13 @@ function alertMessage(message){
     setTimeout(function(){
         $("#dialog").remove();
     }, 5000);
+}
+
+function reset(){
+    $("#scorecard").html("<table id=\"table\">\n" +
+        "        <tr id=\"holes\">\n" +
+        "            <th class=\"player\"></th>\n" +
+        "        </tr>\n" +
+        "    </table>");
+    startGame();
 }

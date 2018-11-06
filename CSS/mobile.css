@@ -1,0 +1,60 @@
+/*Mobile CSS*/
+#blur{
+    background-size: auto;
+}
+
+h1{
+    font-size: 3em;
+}
+
+#form{
+    width: 100%;
+    font-size: 3em;
+}
+
+input, select{
+    width: 50vw;
+    height: 5vh;
+    font-size: 1em;
+}
+
+#dialog, button, #names, #displayCourse, input, select{
+    border-radius: 30px;
+}
+
+option{
+    font-size: 0.3em;
+}
+
+#names{
+    font-size: 3em;
+    width: 100vw;
+}
+
+button[onclick="startGame()"]{
+    font-size: 3em;
+}
+
+#dialog{
+    font-size: 3em;
+    width: 80vw;
+}
+
+#displayCourse{
+    width: 100vw;
+    font-size: 3em;
+}
+
+#scorecard{
+    width: 100vh;
+    font-size: 2em;
+}
+
+#reset{
+    position: fixed;
+    top: 0;
+    width: 30vw;
+    height: 7vh;
+    font-size: 1.5em;
+    z-index: -1;
+}

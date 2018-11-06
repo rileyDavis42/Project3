@@ -105,6 +105,10 @@ input{
     margin: 20vh auto auto;
 }
 
+#reset{
+    background-color: red;
+}
+
 #table{
     width: 100%;
     display: none;
